@@ -1,0 +1,54 @@
+﻿@page "/aboutblazor"
+<!DOCTYPE html>
+<link type="text/css" href="css/aboutblazor.css?v=2" rel="stylesheet" />
+
+<div class="container-fluid">
+    <h1 class="display-4">Why blazor</h1>
+    <div class="row odd-row">
+        <div class="col-6 text-center">
+            <h3>Built on open web standards</h3>
+            <p>
+                Blazor uses open web standards without plugins or code transpilation. Blazor works in all modern web browsers, including mobile browsers.
+            </p>
+            <p>
+                Code running in the browser executes in the same security sandbox as JavaScript frameworks. Blazor code executing on the server has the flexibility to do anything you would normally do on the server, such as connecting directly to a database.
+            </p>
+        </div>
+        <div class="col-6">
+            <img class="float-right img-fluid" src="/img/parallex_1.png" />
+        </div>
+    </div>
+
+    <div class="row even-row">
+        <div class="col-6">
+            <img class="float-left img-fluid" src="/img/parallex_2.png" />
+        </div>
+        <div class="col-6 text-center">
+            <h3 class="even-heading">Share code and libraries</h3>
+            <p>
+                Blazor apps can use existing .NET libraries, thanks to .NET Standard—a formal specification of .NET APIs that are common across all .NET implementations.
+            </p>
+            <p>
+                .NET Standard allows the same code and libraries to be used on the server, in the browser, or anywhere you write .NET code.
+            </p>
+        </div>
+    </div>
+
+    <div class="row odd-row">
+        <div class="col-6 text-center">
+            <h3>Run on WebAssembly or the server</h3>
+            <p>
+                Blazor can run your client-side C# code directly in the browser, using WebAssembly. Because it's real .NET running on WebAssembly, you can re-use code and libraries from server-side parts of your application.
+            </p>
+            <p>
+                Alternatively, Blazor can run your client logic on the server. Client UI events are sent back to the server using SignalR - a real-time messaging framework. Once execution completes, the required UI changes are sent to the client and merged into the DOM.
+            </p>
+        </div>
+        <div class="col-6">
+            <img class="float-right img-fluid" src="/img/parallex_3.png" />
+        </div>
+    </div>
+</div>
+@code {
+
+}

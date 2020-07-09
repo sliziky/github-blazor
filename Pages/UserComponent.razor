@@ -1,0 +1,101 @@
+﻿@using Models
+@inject NavigationManager NavManager
+@inject HttpClient Http
+@if (User != null)
+{
+    <div class="card mx-auto" style="width: 18rem;">
+        <img class="card-img-top" src=@User.AvatarUrl alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">@User.Name</h5>
+            <p @onclick="() => ShowFollowers()">Followers: @User.Followers</p>
+            <p @onclick="() => ShowRepos()">Repos: @User.PublicRepos</p>
+
+            <a href=@User.Url class="btn btn-primary">Link to the profile</a>
+        </div>
+    </div>
+    @if (ReposVisible)
+    {
+        <h3>Repos:</h3>
+        <ul class="list-group">
+            @foreach (var Repo in Repos)
+            {
+                <li class="list-group-item" @onclick="@(e => OnRepoClick(Repo))">@Repo.Name</li>
+            }
+        </ul>
+    }
+    @if (FollowersVisible)
+    {
+        <h3>Followers:</h3>
+        <ul class="list-group">
+            @foreach (var Follower in Followers)
+            {
+                <li class="list-group-item" @onclick="@(async() => await OnFollowerClick(Follower))">@Follower.Login</li>
+            }
+        </ul>
+    }
+}
+@code {
+    [Parameter]
+    public string Login { get; set; }
+
+    private IList<Repo> Repos { get; set; }
+    private IList<User> Followers { get; set; }
+    public User User { get; set; }
+    private bool ReposVisible { get; set; } = false;
+    private bool FollowersVisible { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine($"Login {Login}");
+        if (!String.IsNullOrEmpty(Login))
+        {
+            await FetchUser();
+        }
+    }
+    private async Task FetchUser()
+    {
+        string Url = $"{Api.Url}/users/{Login}";
+        User = await Http.GetFromJsonAsync<User>(Url);
+        await FetchRepos(User.Login);
+        await FetchFollowers(User.Login);
+    }
+    private async Task FetchRepos(string UserName)
+    {
+        string Url = $"{Api.Url}/users/{UserName}/repos";
+        Repos = await Http.GetFromJsonAsync<IList<Repo>>(Url);
+    }
+    private async Task FetchFollowers(string UserName)
+    {
+        string Url = $"{Api.Url}/users/{UserName}/followers";
+        Followers = await Http.GetFromJsonAsync<IList<User>>(Url);
+    }
+
+    private async Task OnFollowerClick(User Follower)
+    {
+
+        Console.WriteLine(Follower.Login);
+        this.Login = Follower.Login;
+        ReposVisible = false;
+        FollowersVisible = false;
+        await OnInitializedAsync();
+    }
+    private void OnRepoClick(Repo Repo)
+    {
+        NavManager.NavigateTo("/repo/" + User.Login + "/" + Repo.Name);
+    }
+
+    private void ShowRepos()
+    {
+        ReposVisible = !ReposVisible;
+    }
+    private void ShowFollowers()
+    {
+        FollowersVisible = !FollowersVisible;
+    }
+    public async Task Refresh()
+    {
+        StateHasChanged();
+        await OnInitializedAsync();
+    }
+
+}

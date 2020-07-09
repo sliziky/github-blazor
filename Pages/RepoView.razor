@@ -1,0 +1,84 @@
+﻿@page "/repo/{owner}/{name}"
+@inject HttpClient Http
+@using Models
+@using Newtonsoft.Json.Linq
+<link href="css/repoview.css" rel="stylesheet" />
+
+
+<h3>@Name</h3>
+@if (Repo != null)
+{
+    <div class="repo-view">
+        <h5>@Repo.HtmlUrl</h5>
+        <h5>@Repo.Language</h5>
+        <img src="/img/@Repo.Language.ToLower()_language.png" alt="@Repo.Language" />
+    </div>
+}
+
+@if (Commits != null)
+{
+    <button class="btn btn-primary" @onclick="() => OnShowCommitsClick()">
+        Show/Hide commits
+    </button>
+    @if (ShowCommits)
+    {
+        <ul class="list-group">
+            @foreach (var Commit in CommitsParsed)
+            {
+                <li class="list-group-item">
+                    <p>
+                        <b>Message:</b> @Commit.Message
+                    </p>
+                    <p>
+                        <b>Commiter:</b> @Commit.Commiter.Name
+                    </p>
+                    <p>
+                        <b>Date:</b> @Commit.Commiter.Date
+                    </p>
+                </li>
+            }
+        </ul>
+       }
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public string Owner { get; set; }
+
+    private Repo Repo { get; set; }
+    private bool ShowCommits { get; set; } = true;
+    private IList<Commit> CommitsParsed { get; set; } = new List<Commit>();
+    private IList<Object> Commits { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        string URL = "https://api.github.com/repos/" + Owner + "/" + Name;
+        Repo = await Http.GetFromJsonAsync<Repo>(URL);
+        await FetchCommits();
+    }
+    private async Task FetchCommits()
+    {
+        string Url = $"{Api.Url}/repos/{Owner}/{Name}/commits";
+        Commits = await Http.GetFromJsonAsync<IList<Object>>(Url);
+        ParseJson();
+    }
+    private void OnShowCommitsClick()
+    {
+        ShowCommits = !ShowCommits;
+    }
+    private void ParseJson()
+    {
+        foreach (var Commit in Commits)
+        {
+            var c = new Commit();
+            c.Commiter = new Commiter();
+            c.Message = JObject.Parse(Commit.ToString())["commit"]["message"].ToString();
+            c.Commiter.Name = JObject.Parse(Commit.ToString())["commit"]["committer"]["name"].ToString();
+            c.Commiter.Date = JObject.Parse(Commit.ToString())["commit"]["committer"]["date"].ToObject<DateTimeOffset>();
+            CommitsParsed.Add(c);
+        }
+    }
+}

@@ -1,0 +1,10 @@
+﻿.repo-view img {
+    height: 80px;
+    width: 80px;
+}
+
+.list-group-item {
+    border: 5 !important;
+    margin: 0px;
+    padding: 10px 0px;
+}

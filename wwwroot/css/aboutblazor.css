@@ -1,0 +1,23 @@
+﻿* {
+    color:black;
+}
+.container-fluid {
+    padding: 100px;
+}
+
+.display-4 {
+    color: mediumslateblue;
+}
+
+.row {
+    color: antiquewhite;
+    margin-top: 50px;
+}
+
+.row img {
+    height: 20rem;
+}
+
+h3 {
+    font-weight: bold;
+}

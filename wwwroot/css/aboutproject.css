@@ -1,0 +1,27 @@
+﻿* {
+    color: black;
+}
+
+.container-fluid {
+    padding: 100px;
+}
+
+.display-4 {
+    color: mediumslateblue;
+}
+
+.col-6 {
+    align-self: center;
+}
+.row {
+    color: antiquewhite;
+    margin-top: 50px;
+}
+
+    .row img {
+        height: 10rem;
+    }
+
+h3 {
+    font-weight: bold;
+}
